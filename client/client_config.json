@@ -1,7 +1,8 @@
 {
     "batchSize":32,
-    "epochs":20,
+    "epochs":1,
     "optimizer":"Adamax",
     "learning_rate":0.001,
-    "criterion":"CrossEntropyLoss"
+    "criterion":"CrossEntropyLoss",
+    "weight_decay" : 1e-4
 }
