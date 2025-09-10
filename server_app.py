@@ -140,7 +140,7 @@ def server_fn(context: Context) -> ServerAppComponents:
         min_available_clients=fl_config['min_available_clients'],  # Wait until all 5 clients are available
         initial_parameters=initial_parameters,  # Set initial parameters
         evaluate_metrics_aggregation_fn= weighted_average,
-        evaluate_fn=get_evaluate_fn(test_dataloader, DEVICE) #permette di valutare globalmente il modello
+        evaluate_fn=get_evaluate_fn(test_dataloader, DEVICE) #permette di valutare il modello globale
         
     )
 

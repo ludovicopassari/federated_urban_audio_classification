@@ -13,13 +13,14 @@ def calculate_snr(spectrogram):
     return mean_signal / std_noise
 
 def calculate_dataset_snr_cnr(dataset):
+    #print('snr processing')
     total_snr = 0
     num_images = 0
     total_dataset = dataset.dataset  # Se il dataset è un DataLoader, accedi al dataset sottostante
     new_dataloader = DataLoader(total_dataset, batch_size=1)  # Creare un DataLoader per accedere ai singoli elementi
     
-    for _, data in enumerate(new_dataloader, 0):  # Assumendo che il dataset sia nel formato (immagine, etichetta)
-        image, = data['image']
+    for _, data in enumerate(new_dataloader): 
+        image, = data[0]
         image_array = image.numpy()
         
         # Calcolo di SNR e CNR per l'immagine corrente
