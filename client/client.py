@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class FlowerClient(NumPyClient):
-    def __init__(self, partition_id, net, trainloader, valloader,mean_snr,config):
+    def __init__(self, partition_id, net, trainloader, valloader,mean_snr,config, device):
 
         #model settings
         self._net = net
@@ -31,7 +31,7 @@ class FlowerClient(NumPyClient):
         self.batch_size = config['batchSize'] if 'batchSize' in config else 32
         self.learning_rate = config['learning_rate'] if 'learning_rate' in config else 0.001
         self.weight_decay = config['weight_decay'] if 'weight_decay' in config else 1e-4
-        self._device = config["device"] if "device" in config else 'mps'
+        self._device = device
 
         #data partition setting
         self.partition_id = partition_id

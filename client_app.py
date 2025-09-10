@@ -103,7 +103,8 @@ def client_fn(context: Context):
         trainloader=train_loader, 
         valloader=validation_loader, 
         config=client_config,
-        mean_snr= mri_parameters
+        mean_snr= mri_parameters,
+        device= DEVICE
     ).to_client()
 
 # Create the ClientApp
