@@ -22,6 +22,7 @@ from models.models import TorchModelOptimized, get_parameters, set_parameters,cr
 
 from device_utils import DEVICE
 from dataset_utils.AudioDS import AudioDS
+from custom_strategies.strategies import FedSNR
 
 import os
 
@@ -131,7 +132,7 @@ def server_fn(context: Context) -> ServerAppComponents:
     config = ServerConfig(num_rounds=fl_config['num_rounds'])
 
     # Create FedAvg strategy with initial parameters
-    strategy = FedAvg(
+    strategyAVG = FedAvg(
         fraction_fit= fl_config['fraction_fit'],  # Sample 100% of available clients for training
         fraction_evaluate=fl_config['fraction_evaluate'],  # Sample 50% of available clients for evaluation
         min_fit_clients=fl_config['min_fit_clients'],  # Never sample less than 5 clients for training
@@ -142,6 +143,22 @@ def server_fn(context: Context) -> ServerAppComponents:
         evaluate_fn=get_evaluate_fn(test_dataloader, DEVICE) #permette di valutare globalmente il modello
         
     )
+
+    strategySNR = FedSNR(
+        fraction_fit=fl_config["fraction_fit"],
+        fraction_evaluate=fl_config['fraction_evaluate'],
+        min_available_clients=fl_config["fitClients"],
+        #on_fit_config_fn=on_fit_config,
+        initial_parameters=initial_parameters,
+        evaluate_fn=get_evaluate_fn(test_dataloader, device=DEVICE),
+    )
+
+    if fl_config["strategy"] == "FedAvg":
+        strategy = strategyAVG
+    elif fl_config["strategy"] == "FedSNR":
+        strategy = strategySNR
+    else:
+        raise ValueError(f"Invalid strategy: {fl_config['strategy']}")
 
     return ServerAppComponents(strategy=strategy, config=config)
 

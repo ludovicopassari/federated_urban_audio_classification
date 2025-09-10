@@ -17,6 +17,7 @@ from client.client import FlowerClient
 from dataset_utils.AudioDS import AudioDS
 
 from device_utils import DEVICE
+from snr_utils.snr_processing import calculate_dataset_snr_cnr
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -93,7 +94,9 @@ def client_fn(context: Context):
     
     partition_id = context.node_config["partition-id"]
     train_loader, validation_loader = load_datasets(partition_id=partition_id)
-        
+    
+    mri_parameters = calculate_dataset_snr_cnr(train_loader)
+
     return FlowerClient(
         partition_id=partition_id, 
         net=net, 

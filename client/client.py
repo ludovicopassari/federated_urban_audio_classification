@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class FlowerClient(NumPyClient):
-    def __init__(self, partition_id, net, trainloader, valloader,config):
+    def __init__(self, partition_id, net, trainloader, valloader,mean_snr,config):
 
         #model settings
         self._net = net
@@ -37,6 +37,9 @@ class FlowerClient(NumPyClient):
         self.partition_id = partition_id
         self._trainloader = trainloader
         self._validation_loader = valloader
+
+        #aggregation
+        self.mean_snr = float(mean_snr)
         
     def get_parameters(self, config):
 
@@ -45,7 +48,13 @@ class FlowerClient(NumPyClient):
     def fit(self, parameters, config):
         set_parameters(self._net, parameters)
         self.train()
-        return get_parameters(self._net), len(self._trainloader), {}
+
+        metrics = {
+            "client_id": self.partition_id,
+            "mean_snr": self.mean_snr
+        }
+
+        return get_parameters(self._net), len(self._trainloader), metrics
 
     def evaluate(self, parameters, config):
         set_parameters(self._net, parameters)
